@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -12,10 +12,20 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+} */
+
+/* styles/globals.css */
+
+@font-face {
+  font-family: 'YourFontName';
+  src: url('../../public/fonts/Poppins-ExtraLight.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'YourFontName', sans-serif;
 }
+/* .text-accent-color{
+  color:#f472af;
+} */
