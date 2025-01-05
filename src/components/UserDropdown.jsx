@@ -7,11 +7,33 @@ import UserIcon from "./SvgIcons/UserIcon";
 const UserDropdown = ({username,userEamil,userPhotoURL}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState("right-0"); // Default position
+  const [imgSrc, setImgSrc] = useState(userPhotoURL);
   const dropdownRef = useRef(null);
-  const [imgSrc,setImgSrc] = useState(userPhotoURL);
+
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
+
+  const handleClickOutside = (event) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target)
+    ) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isDropdownOpen) {
+      document.addEventListener("click", handleClickOutside);
+    } else {
+      document.removeEventListener("click", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   useEffect(() => {
     if (isDropdownOpen && dropdownRef.current) {
@@ -46,24 +68,6 @@ const UserDropdown = ({username,userEamil,userPhotoURL}) => {
             <div>{username}</div>
             <div className="font-medium truncate">{userEamil}</div>
           </div>
-          <ul className="py-2 text-sm text-gray-700">
-            <li>
-              <a
-                href="#"
-                className="block px-4 py-2 hover:bg-gray-100"
-              >
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block px-4 py-2 hover:bg-gray-100"
-              >
-                Settings
-              </a>
-            </li>
-          </ul>
           <div className="py-1">
             <div
              onClick={()=>{
