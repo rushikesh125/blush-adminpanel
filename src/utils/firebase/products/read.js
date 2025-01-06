@@ -2,6 +2,7 @@
 import { db } from "../firebase"; // Adjust this path based on your project structure
 import {
   collection,
+  doc,
   limit,
   onSnapshot,
   query,
@@ -45,6 +46,35 @@ export function useProducts({ pageLimit, lastSnapDoc }) {
   return {
     data: data?.list,
     lastSnapDoc: data?.lastSnapDoc,
+    error: error?.message,
+    isLoading: data === undefined,
+  };
+}
+
+export function useProduct({ productId }) {
+  // Subscribe to Firestore collection using SWRSubscription
+  const { data, error } = useSWRSubscription(
+    ["products", productId], // Key to identify this subscription
+    ([path, productId], { next }) => {
+      // Define Firestore collection reference
+      const ref = doc(db, `products/${productId}`);
+      // Setup Firestore listener
+      const unsub = onSnapshot(
+        ref,
+        (snapshot) => {
+          next(null,
+            snapshot.exists()? snapshot.data():null
+          );
+        },
+        (err) => next(err, null)
+      );
+
+      return () => unsub();
+    }
+  );
+
+  return {
+    data: data,
     error: error?.message,
     isLoading: data === undefined,
   };
