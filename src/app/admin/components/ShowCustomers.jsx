@@ -8,31 +8,30 @@ import { useRouter } from "next/navigation";
 import { useProducts } from "@/utils/firebase/products/read"; // Adjust the import path as necessary
 import { deleteProduct } from "@/utils/firebase/products/delete";
 import CustomBtn3 from "@/components/CustomBtn3";
-import { useAllOrders } from "@/utils/firebase/orders/read";
-import Link from "next/link";
-import { useUser } from "@/utils/firebase/user/read";
+import { useUsers } from "@/utils/firebase/user/read";
 
-const ShowOrders = () => {
+const ShowCustomers = () => {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [lastSnapDocList, setLastSnapDocList] = useState([]);
 
-  useEffect(() => {
+  useEffect(()=>{
     setLastSnapDocList([]);
-  }, [itemsPerPage]);
+  },[itemsPerPage])
 
   const {
-    data: orders,
+    data: users,
     error,
     isLoading,
     lastSnapDoc,
-  } = useAllOrders({
+  } = useUsers({
     pageLimit: itemsPerPage,
     lastSnapDoc:
       lastSnapDocList?.length == 0
         ? null
         : lastSnapDocList[lastSnapDocList?.length - 1],
   });
-  // console.log("Orders:", orders);
+//   console.log('Customers:',users);
+
   const handleNextPage = () => {
     let newStack = [...lastSnapDocList];
     newStack.push(lastSnapDoc);
@@ -53,26 +52,23 @@ const ShowOrders = () => {
 
   return (
     <div className="w-full bg-white p-2 rounded-md">
-      {/* <div>Products</div> */}
+      {/* <div>users</div> */}
       <div className="mt-5 overflow-x-auto">
         <table className="table-auto border-collapse w-full text-sm">
           <thead>
             <tr>
               <th className="p-1 text-center border-b">Sr. No.</th>
-              <th className="p-1 border-b">Customer</th>
-              <th className="p-1 border-b">Payment mode</th>
-              <th className="p-1 border-b">Total Price</th>
-              <th className="p-1 border-b">Total Products</th>
-              <th className="p-1 border-b">Status</th>
-              <th className="p-1 border-b text-center">Actions</th>
+              <th className="p-1 border-b">Name</th>
+              <th className="p-1 border-b">Email</th>
+              <th className="p-1 border-b">id</th>
             </tr>
           </thead>
           <tbody>
-            {orders?.map((item, index) => (
-              <OrderRow
+            {users?.map((item, index) => (
+              <CustomerRow
                 item={item}
                 index={index + lastSnapDocList?.length * itemsPerPage}
-                key={item.orderId}
+                key={index}
               />
             ))}
           </tbody>
@@ -94,16 +90,16 @@ const ShowOrders = () => {
           id="itemsPerPage"
           name="itemsPerPage"
         >
-          <option value={5}>5 items</option>
-          <option value={10}>10 items</option>
-          <option value={15}>15 items</option>
-          <option value={20}>20 items</option>
-          <option value={30}>30 items</option>
+          <option value={5}>5 users</option>
+          <option value={10}>10 users</option>
+          <option value={15}>15 users</option>
+          <option value={20}>20 users</option>
+          <option value={30}>30 users</option>
         </select>
         <CustomBtn3
           className={`bg-slate-100 hover:bg-slate-200 py-1 px-4 rounded-md`}
           onClick={handleNextPage}
-          isLoading={!orders}
+          isLoading={!users}
         >
           Next
         </CustomBtn3>
@@ -112,42 +108,18 @@ const ShowOrders = () => {
   );
 };
 
-export default ShowOrders;
+export default ShowCustomers;
 
-const OrderRow = ({ item, index }) => {
-  // const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const { data: user } = useUser({ uid: item?.uid });
-  // console.log("user:", user);
+const CustomerRow = ({ item, index }) => {
+
+
   return (
     <tr className="border-b">
       <td className="p-1 text-center">{index + 1}</td>
-      <td className="p-1">
-        <div className=""> {user?.displayName || "user\n"}</div>
-        <div className="text-[10px] text-slate-400">{item?.uid}</div>
-      </td>
-      <td className="p-1 text-center">
-        <span className="bg-gray-200 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded ">
-          {item?.metaData?.paymentMode}
-        </span>
-      </td>
-      <td className="p-1 text-center">
-        &#8377;{item?.metaData?.ProductsPrice}
-      </td>
-      <td className="p-1 text-center">{item?.productList.length}</td>
-      <td className="p-1 text-center flex justify-center items-center">
-        <span className="bg-green-200 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-          {item?.metaData?.ProductStatus}
-        </span>
-      </td>
-      <td className="p-1 text-center">
-        <Link
-          href={`/admin/orders/${item?.orderId}`}
-          className="px-2 rounded-md bg-black text-white"
-        >
-          View
-        </Link>
-      </td>
+
+      <td className="p-1">{item?.displayName}</td>
+      <td className="p-1">{item?.email}</td>
+      <td className="p-1 text-xs">{item?.uid}</td>
     </tr>
   );
 };
