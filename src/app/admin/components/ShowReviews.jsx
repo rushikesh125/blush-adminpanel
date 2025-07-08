@@ -8,6 +8,8 @@ import Avatar from "@/components/Avatar";
 import { Rating } from "@mui/material";
 import { deleteReview } from "@/utils/firebase/reviews/delete";
 import { useProduct } from "@/utils/firebase/products/read";
+import Link from "next/link";
+import { Domain } from "@/utils/utils";
 
 const ShowReviews = () => {
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -143,7 +145,10 @@ const ReviewedProduct = ({ productId }) => {
 
   return (
     <>
-      <div className="text-xs bg-slate-100 inline-block px-1 rounded-md">{product?.productname}</div>
+      <div className="text-xs bg-slate-100 inline-block px-1 rounded-md">
+        <Link href={`${Domain}/product/${productId}`}>
+        {product?.productname}</Link>
+      </div>
     </>
   );
 };

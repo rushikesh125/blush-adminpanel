@@ -1,5 +1,7 @@
 export const productsURL = "https://fakestoreapi.com/products";
 export const productURL = `https://fakestoreapi.com/products/`;
+
+export const Domain = "https://blush-shop.vercel.app"
 export async function fetchProductInfo(id) {
   try {
     const response = await fetch(productURL + id);
